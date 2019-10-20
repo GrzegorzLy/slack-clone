@@ -1,7 +1,13 @@
 type Team {
+	id: Int!
 	owner: User!
 	members: [User!]!
 	channels: [Channel!]!
+	name: String!
+}
+
+type Query {
+	getTeam(id: Int!): Team!
 }
 
 type Mutation {
