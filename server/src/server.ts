@@ -15,37 +15,37 @@ const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './modules/**/*.grap
 const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './modules/**/*.resolver.ts')));
 
 const schema = makeExecutableSchema({
-	typeDefs,
-	resolvers,
+  typeDefs,
+  resolvers,
 });
 
 const port = 4000;
 (async () => {
-	const app = express();
-	app.use(cookieParser());
-	app.use(bodyParser.json());
-	app.use(
-		cors({
-			origin: 'http://localhost:3000',
-			credentials: true,
-		}),
-	);
-	app.get('/', (_, res) => res.send('slack clone'));
+  const app = express();
+  app.use(cookieParser());
+  app.use(bodyParser.json());
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    }),
+  );
+  app.get('/', (_, res) => res.send('slack clone'));
 
-	const apolloServer = new ApolloServer({
-		schema,
-		context: ({ req, res }) => ({
-			req,
-			res,
-			services,
-			user: { id: 1 },
-		}),
-	});
-	apolloServer.applyMiddleware({ app, cors: false });
+  const apolloServer = new ApolloServer({
+    schema,
+    context: ({ req, res }) => ({
+      req,
+      res,
+      services,
+      user: { id: 1 },
+    }),
+  });
+  apolloServer.applyMiddleware({ app, cors: false });
 
-	db.sync().then(() => {
-		app.listen(port, () => {
-			console.log(`express server started at port ${port}`);
-		});
-	});
+  db.sync().then(() => {
+    app.listen(port, () => {
+      console.log(`express server started at port ${port}`);
+    });
+  });
 })();

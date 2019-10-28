@@ -1,28 +1,37 @@
-import { Column, Model, Table, ForeignKey, BelongsToMany, BelongsTo, HasMany } from 'sequelize-typescript';
+import {
+  Column,
+  Model,
+  Table,
+  ForeignKey,
+  BelongsToMany,
+  BelongsTo,
+  HasMany,
+} from 'sequelize-typescript';
 import Team from '../team/team.model';
 import User from '../user/user.model';
 import ChannelUser from '../channelUser/channelUser.model';
 import Message from '../message/message.model';
 
 @Table({
-	tableName: 'channel',
+  tableName: 'channel',
 })
 export default class Channel extends Model<Channel> {
-	@Column public name: string;
-	@Column public public: boolean;
+  @Column public name: string;
 
-	@ForeignKey(() => Team)
-	@Column
-	teamId: number;
+  @Column public public: boolean;
 
-	@BelongsTo(() => Team)
-	team: Team;
+  @ForeignKey(() => Team)
+  @Column
+  teamId: number;
 
-	@BelongsToMany(() => User, () => ChannelUser)
-	public users?: User[];
+  @BelongsTo(() => Team)
+  team: Team;
 
-	@HasMany(() => Message)
-	messages: Message[];
+  @BelongsToMany(() => User, () => ChannelUser)
+  public users?: User[];
+
+  @HasMany(() => Message)
+  messages: Message[];
 }
 // Channel.init({
 //   name: DataTypes.STRING,
