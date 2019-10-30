@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -10,6 +11,8 @@ import cors from 'cors';
 
 import db from './db';
 import services from './services';
+import refreshTokenMiddleware from './auth/refreshToken';
+import { tradeTokenForUser } from './auth/utils';
 
 const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './modules/**/*.graphql')));
 const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './modules/**/*.resolver.ts')));
@@ -19,27 +22,31 @@ const schema = makeExecutableSchema({
 	resolvers,
 });
 
-const port = 4000;
+const port = process.env.PORT || 3000;
 (async () => {
 	const app = express();
 	app.use(cookieParser());
 	app.use(bodyParser.json());
 	app.use(
 		cors({
-			origin: 'http://localhost:3000',
+			origin: '*',
 			credentials: true,
 		}),
 	);
-	app.get('/', (_, res) => res.send('slack clone'));
+
+	app.get('/', (_, res) => res.send('server is running'));
+	app.post('/refresh_token', refreshTokenMiddleware(services));
 
 	const apolloServer = new ApolloServer({
 		schema,
-		context: ({ req, res }) => ({
-			req,
-			res,
-			services,
-			user: { id: 1 },
-		}),
+		context: ({ req, res }) => {
+			return {
+				req,
+				res,
+				services,
+				user: tradeTokenForUser(req),
+			};
+		},
 	});
 	apolloServer.applyMiddleware({ app, cors: false });
 

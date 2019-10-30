@@ -10,6 +10,16 @@ type Query {
 	allUsers: [User!]!
 }
 
+type LoginResponse {
+	accessToken: String
+}
+
+type RegisterResponse {
+	success: Boolean!
+	error: String
+}
+
 type Mutation {
-	createUser(userName: String!, email: String!, password: String!): User!
+	register(userName: String!, email: String!, password: String!): RegisterResponse!
+	login(email: String!, password: String!): LoginResponse!
 }

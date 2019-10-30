@@ -17,6 +17,8 @@ export default class User extends Model<User> {
 
 	@Column public password: string;
 
+	@Column public tokenVersion: number;
+
 	@BelongsToMany(() => Channel, () => ChannelUser)
 	public channels?: Channel[];
 
