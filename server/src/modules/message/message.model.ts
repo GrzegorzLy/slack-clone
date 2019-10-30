@@ -3,24 +3,24 @@ import Channel from '../channel/channel.model';
 import User from '../user/user.model';
 
 @Table({
-	tableName: 'message',
+  tableName: 'message',
 })
 export default class Message extends Model<Message> {
-	@Column public text: string;
+  @Column public text: string;
 
-	@ForeignKey(() => User)
-	@Column
-	userId: number;
+  @ForeignKey(() => User)
+  @Column
+  userId: number;
 
-	@ForeignKey(() => Channel)
-	@Column
-	channelId: number;
+  @ForeignKey(() => Channel)
+  @Column
+  channelId: number;
 
-	@BelongsTo(() => User)
-	user: User;
+  @BelongsTo(() => User)
+  user: User;
 
-	@BelongsTo(() => Channel)
-	channel: Channel;
+  @BelongsTo(() => Channel)
+  channel: Channel;
 }
 
 // export default (sequelize, DataTypes) => {

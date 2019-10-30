@@ -18,41 +18,41 @@ const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './modules/**/*.grap
 const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './modules/**/*.resolver.ts')));
 
 const schema = makeExecutableSchema({
-	typeDefs,
-	resolvers,
+  typeDefs,
+  resolvers,
 });
 
 const port = process.env.PORT || 3000;
 (async () => {
-	const app = express();
-	app.use(cookieParser());
-	app.use(bodyParser.json());
-	app.use(
-		cors({
-			origin: '*',
-			credentials: true,
-		}),
-	);
+  const app = express();
+  app.use(cookieParser());
+  app.use(bodyParser.json());
+  app.use(
+    cors({
+      origin: '*',
+      credentials: true,
+    }),
+  );
 
-	app.get('/', (_, res) => res.send('server is running'));
-	app.post('/refresh_token', refreshTokenMiddleware(services));
+  app.get('/', (_, res) => res.send('server is running'));
+  app.post('/refresh_token', refreshTokenMiddleware(services));
 
-	const apolloServer = new ApolloServer({
-		schema,
-		context: ({ req, res }) => {
-			return {
-				req,
-				res,
-				services,
-				user: tradeTokenForUser(req),
-			};
-		},
-	});
-	apolloServer.applyMiddleware({ app, cors: false });
+  const apolloServer = new ApolloServer({
+    schema,
+    context: ({ req, res }) => {
+      return {
+        req,
+        res,
+        services,
+        user: tradeTokenForUser(req),
+      };
+    },
+  });
+  apolloServer.applyMiddleware({ app, cors: false });
 
-	db.sync().then(() => {
-		app.listen(port, () => {
-			console.log(`express server started at port ${port}`);
-		});
-	});
+  db.sync().then(() => {
+    app.listen(port, () => {
+      console.log(`express server started at port ${port}`);
+    });
+  });
 })();

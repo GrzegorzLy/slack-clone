@@ -3,8 +3,8 @@ import User from './modules/user/user.model';
 import { IServices } from './services';
 
 export interface MyContext {
-	res: Response;
-	req: Request;
-	user?: User;
-	services: IServices;
+  res: Response;
+  req: Request;
+  user?: User;
+  services: IServices;
 }

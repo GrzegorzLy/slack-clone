@@ -6,28 +6,28 @@ import TeamUser from '../teamUser/teamUser.model';
 import Message from '../message/message.model';
 
 @Table({
-	tableName: 'user',
+  tableName: 'user',
 })
 export default class User extends Model<User> {
-	@Column({ unique: true })
-	public userName: string;
+  @Column({ unique: true })
+  public userName: string;
 
-	@Column({ unique: true })
-	public email: string;
+  @Column({ unique: true })
+  public email: string;
 
-	@Column public password: string;
+  @Column public password: string;
 
-	@Column public tokenVersion: number;
+  @Column public tokenVersion: number;
 
-	@BelongsToMany(() => Channel, () => ChannelUser)
-	public channels?: Channel[];
+  @BelongsToMany(() => Channel, () => ChannelUser)
+  public channels?: Channel[];
 
-	@BelongsToMany(() => Team, () => TeamUser)
-	public teams?: Team[];
+  @BelongsToMany(() => Team, () => TeamUser)
+  public teams?: Team[];
 
-	@HasMany(() => Message)
-	messages: Message[];
+  @HasMany(() => Message)
+  messages: Message[];
 
-	@HasMany(() => Team)
-	ownersTeams: Team[];
+  @HasMany(() => Team)
+  ownersTeams: Team[];
 }

@@ -1,34 +1,34 @@
 import { MyContext } from 'src/MyContext';
 
 export default {
-	Query: {
-		getUser: (_: any, { id }: IGetUser, { services: { User } }: MyContext) => User.get(id),
-		allUsers: (_: any, __: any, { services: { User } }: MyContext) => User.all(),
-	},
-	Mutation: {
-		register: (_: any, args: IRegister, { services: { User } }: MyContext) => User.register(args),
-		login: (_: any, args: ILogin, { services: { User }, res }: MyContext) => User.login(args, res),
-	},
+  Query: {
+    getUser: (_: any, { id }: IGetUser, { services: { User } }: MyContext) => User.get(id),
+    allUsers: (_: any, __: any, { services: { User } }: MyContext) => User.all(),
+  },
+  Mutation: {
+    register: (_: any, args: IRegister, { services: { User } }: MyContext) => User.register(args),
+    login: (_: any, args: ILogin, { services: { User }, res }: MyContext) => User.login(args, res),
+  },
 };
 
 interface IGetUser {
-	id: number;
+  id: number;
 }
 
 export interface ILogin {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 export interface IRegister extends ILogin {
-	userName: string;
+  userName: string;
 }
 
 export interface ILoginResponse {
-	accessToken: string;
+  accessToken: string;
 }
 
 export interface IRegisterResponse {
-	success: boolean;
-	error: string | null;
+  success: boolean;
+  error: string | null;
 }
