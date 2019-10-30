@@ -1,63 +1,60 @@
 import { hash, compare } from 'bcryptjs';
-
 import { Repository } from 'sequelize-typescript';
 import { Response } from 'express';
 import User from './user.model';
-import { IRegister, ILogin, ILoginResponse, IRegisterResponse } from './user.resolver';
+import { IRegister, ILogin } from './user.resolver';
 import { sendRefreshToken, createRefreshToken, createAccessToken } from '../../auth/utils';
+import { AuthenticationError } from 'apollo-server-core';
 
-export const get = (model: Repository<User>) => (id: number) => model.findOne({ where: { id } });
+class UserService {
+	_userRepository: Repository<User>;
 
-export const all = (model: Repository<User>) => () => model.findAll();
+	constructor(model: Repository<User>) {
+		this._userRepository = model;
+	}
 
-export const register = (model: Repository<User>) => async (
-  arg: IRegister,
-): Promise<IRegisterResponse> => {
-  try {
-    const password = await hash(arg.password, 12);
-    await model.create({ ...arg, password });
-    return {
-      success: true,
-      error: null,
-    };
-  } catch (err) {
-    return {
-      success: false,
-      error: err.toString(),
-    };
-  }
-};
+	me = (id: number | null) => {
+		console.log(id);
+		if (!id) {
+			throw new AuthenticationError('Authentication error');
+		}
+		return this._userRepository.findOne({ where: { id } });
+	};
 
-export const login = (model: Repository<User>) => async (
-  { email, password }: ILogin,
-  res: Response,
-) => {
-  const user = await model.findOne({ where: { email } });
-  if (!user) {
-    throw new Error('authentication failed!');
-  }
-  const valid = await compare(password, user.password);
-  if (!valid) {
-    throw new Error('authentication failed!');
-  }
-  sendRefreshToken(res, createRefreshToken(user));
-  return {
-    accessToken: createAccessToken(user),
-  };
-};
+	get = (id: number) => this._userRepository.findOne({ where: { id } });
 
-const UserController = (model: Repository<User>): IUserServices => ({
-  get: get(model),
-  all: all(model),
-  register: register(model),
-  login: login(model),
-});
+	all = () => this._userRepository.findAll();
 
-export interface IUserServices {
-  get: (id: number) => Promise<User | null>;
-  all: () => Promise<User[]>;
-  register: (arg: any) => Promise<IRegisterResponse>;
-  login: (arg: any, res: Response) => Promise<ILoginResponse>;
+	register = async (arg: IRegister) => {
+		try {
+			const password = await hash(arg.password, 12);
+			await this._userRepository.create({ ...arg, password });
+			return {
+				success: true,
+				error: null,
+			};
+		} catch (err) {
+			return {
+				success: false,
+				error: err.toString(),
+			};
+		}
+	};
+
+	login = async ({ email, password }: ILogin, res: Response) => {
+		const user = await this._userRepository.findOne({ where: { email } });
+		if (!user) {
+			throw new Error('authentication failed!');
+		}
+		const valid = await compare(password, user.password);
+		if (!valid) {
+			throw new Error('authentication failed!');
+		}
+		sendRefreshToken(res, createRefreshToken(user));
+		return {
+			accessToken: createAccessToken(user),
+		};
+	};
 }
 
-export default UserController;
+export default UserService;

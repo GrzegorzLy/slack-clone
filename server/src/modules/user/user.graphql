@@ -6,6 +6,7 @@ type User {
 }
 
 type Query {
+	me: User!
 	getUser(id: Int!): User!
 	allUsers: [User!]!
 }
