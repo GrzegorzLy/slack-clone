@@ -1,10 +1,5 @@
 import { IServices } from 'src/services';
-import {
-  verifyRefreshToken,
-  createAccessToken,
-  sendRefreshToken,
-  createRefreshToken,
-} from './utils';
+import { verifyRefreshToken, createAccessToken, sendRefreshToken, createRefreshToken } from './utils';
 
 export default ({ User }: IServices) => async (req: any, res: any) => {
   const token = req.cookies.jid;

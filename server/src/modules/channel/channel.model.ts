@@ -1,12 +1,4 @@
-import {
-  Column,
-  Model,
-  Table,
-  ForeignKey,
-  BelongsToMany,
-  BelongsTo,
-  HasMany,
-} from 'sequelize-typescript';
+import { Column, Model, Table, ForeignKey, BelongsToMany, BelongsTo, HasMany } from 'sequelize-typescript';
 import Team from '../team/team.model';
 import User from '../user/user.model';
 import ChannelUser from '../channelUser/channelUser.model';

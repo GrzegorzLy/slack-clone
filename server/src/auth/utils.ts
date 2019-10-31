@@ -3,7 +3,9 @@ import { Response, Request } from 'express';
 import User from 'src/modules/user';
 
 export const createAccessToken = (user: User) =>
-  sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '15m' });
+  sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET!, {
+    expiresIn: '15m',
+  });
 
 export const createRefreshToken = (user: User) =>
   sign({ userId: user.id, tokenVersion: user.tokenVersion }, process.env.REFRESH_TOKEN_SECRET!, {
@@ -11,8 +13,7 @@ export const createRefreshToken = (user: User) =>
   });
 
 export const verifyAccessToken = (token: string) => verify(token, process.env.ACCESS_TOKEN_SECRET!);
-export const verifyRefreshToken = (token: string) =>
-  verify(token, process.env.REFRESH_TOKEN_SECRET!);
+export const verifyRefreshToken = (token: string) => verify(token, process.env.REFRESH_TOKEN_SECRET!);
 
 export const sendRefreshToken = (res: Response, token: string) =>
   res.cookie('jid', token, { httpOnly: true, path: '/refresh_token' });
