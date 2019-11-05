@@ -1,8 +1,10 @@
 import { MyContext } from 'src/MyContext';
+import {combineResolvers } from 'graphql-resolvers'
+import { isAuthenticated } from 'src/auth/utils';
 
 export default {
   Query: {
-    me: (_: any, __: any, { user, services: { User } }: MyContext) => User.me(user && user.id),
+    me: combineResolvers(isAuthenticated, (_: any, __: any, { user, services: { User } }: MyContext) => User.me(user && user.id)),
     getUser: (_: any, { id }: IEntity, { services: { User } }: MyContext) => User.get(id),
     allUsers: (_: any, __: any, { services: { User } }: MyContext) => User.all(),
   },

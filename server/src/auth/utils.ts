@@ -1,6 +1,8 @@
 import { sign, verify } from 'jsonwebtoken';
 import { Response, Request } from 'express';
+import { skip } from 'graphql-resolvers';
 import User from 'src/modules/user';
+import { MyContext } from 'src/MyContext';
 
 export const createAccessToken = (user: User) =>
   sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET!, {
@@ -31,6 +33,8 @@ export const tradeTokenForUser = (req: Request) => {
     return null;
   }
 };
+
+export const isAuthenticated = (_: any, __: any, { user } : MyContext) => user ? skip : new Error('Not authenticated')
 
 interface IPayload {
   userId: number;
